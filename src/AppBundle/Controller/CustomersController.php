@@ -19,8 +19,8 @@ class CustomersController extends Controller
         $cacheService = $this->get('cache_service');
 
         if (empty($customers)) {
-            $database = $this->get('database_service')->getDatabase();
-            $customers = $database->customers->find();
+            $database = $this->get('database_service');
+            $customers = $database->executeQuery("customers");
             $customers = iterator_to_array($customers);
         }
 
@@ -33,16 +33,14 @@ class CustomersController extends Controller
      */
     public function postAction(Request $request)
     {
-        $database = $this->get('database_service')->getDatabase();
+        $database = $this->get('database_service');
         $customers = json_decode($request->getContent());
 
         if (empty($customers)) {
             return new JsonResponse(['status' => 'No donuts for you'], 400);
         }
 
-        foreach ($customers as $customer) {
-            $database->customers->insert($customer);
-        }
+        $database->bulkWrite('customers', $customers);
 
         return new JsonResponse(['status' => 'Customers successfully created']);
     }
