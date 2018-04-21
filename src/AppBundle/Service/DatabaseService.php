@@ -4,6 +4,8 @@ namespace AppBundle\Service;
 
 use \MongoDB\Driver\Manager;
 use \MongoDB\Driver\Query;
+use \MongoDB\Driver\Command;
+use \MongoDB\Driver\BulkWrite;
 use \MongoDB;
 
 class DatabaseService
@@ -43,13 +45,20 @@ class DatabaseService
 
     public function bulkWrite($collection, $data)
     {
-        $bulkWrite = new \MongoDB\Driver\BulkWrite;
+        $bulkWrite = new BulkWrite;
         
         foreach ($data as $item) {
             $bulkWrite->insert($item);
         }
         
         return $this->manager->executeBulkWrite($this->database . '.' . $collection, $bulkWrite);
+    }
+
+    public function drop($collection)
+    {
+        $drop = new Command(["drop" => $collection]);
+
+        return $this->manager->executeCommand($this->database, $drop);
     }
 
 }

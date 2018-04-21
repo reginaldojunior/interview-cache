@@ -51,8 +51,9 @@ class CustomersController extends Controller
      */
     public function deleteAction()
     {
-        $database = $this->get('database_service')->getDatabase();
-        $database->customers->drop();
+        $database = $this->get('database_service');
+
+        $database->drop('customers');
 
         return new JsonResponse(['status' => 'Customers successfully deleted']);
     }

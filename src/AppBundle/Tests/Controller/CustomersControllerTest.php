@@ -28,4 +28,30 @@ class CustomersControllerTest extends WebTestCase
 
         $this->assertTrue($this->client->getResponse()->isSuccessful());
     }
+
+    public function testGetCustomers()
+    {
+        $this->client->request('GET', '/customers/');
+
+        $response = json_decode($this->client->getResponse()->getContent());
+
+        $this->assertNotEmpty($response);
+    }
+
+    public function testDeleteCustomers()
+    {
+        $this->client->request('DELETE', '/customers/');
+
+        $this->assertTrue($this->client->getResponse()->isSuccessful());
+    }
+
+    public function testGetEmptyCustomers()
+    {
+        $this->client->request('GET', '/customers/');
+
+        $response = json_decode($this->client->getResponse()->getContent());
+
+        $this->assertEmpty($response);
+    }
+
 }
