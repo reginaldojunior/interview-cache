@@ -26,6 +26,8 @@ class CacheService
             $this->redis = new Client([
                 'host' => $host, 
                 'port' => $port
+            ], [
+                'prefix' => $prefix
             ]);
             
             $this->redis->connect();
