@@ -39,7 +39,7 @@ class CacheService
     public function get($key)
     {
         if (!$this->isOn)
-            return false;
+            return null;
 
         return $this->redis->get($key);
     }
