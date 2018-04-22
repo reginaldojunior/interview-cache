@@ -11,10 +11,12 @@ class DatabaseServiceTest extends WebTestCase
 
     public function setUp()
     {
+        $this->client = static::createClient();
+        
         $this->serviceDatabase = new \AppBundle\Service\DatabaseService(
-            '127.0.0.1',
-            '27017',
-            'easytaxi-symfony-cache-test'
+            $this->client->getKernel()->getContainer()->getParameter('database_host'),
+            $this->client->getKernel()->getContainer()->getParameter('database_port'),
+            $this->client->getKernel()->getContainer()->getParameter('database_name')
         );
     }
 

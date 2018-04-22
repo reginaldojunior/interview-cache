@@ -11,10 +11,12 @@ class CacheServiceTest extends WebTestCase
 
     public function setUp()
     {
+        $this->client = static::createClient();
+        
         $this->serviceCache = new \AppBundle\Service\CacheService(
-            '127.0.0.1',
-            '6379',
-            ''
+            $this->client->getKernel()->getContainer()->getParameter('cache_host'),
+            $this->client->getKernel()->getContainer()->getParameter('cache_port'),
+            $this->client->getKernel()->getContainer()->getParameter('cache_prefix')
         );
 
         $this->serviceCacheFail = new \AppBundle\Service\CacheService(
