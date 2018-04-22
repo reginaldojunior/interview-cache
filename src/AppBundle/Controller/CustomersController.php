@@ -38,6 +38,8 @@ class CustomersController extends Controller
     public function postAction(Request $request)
     {
         $database = $this->get('database_service');
+        $cacheService = $this->get('cache_service');
+
         $customers = json_decode($request->getContent());
 
         if (empty($customers)) {
@@ -45,6 +47,8 @@ class CustomersController extends Controller
         }
 
         $database->bulkWrite('customers', $customers);
+
+        $cacheService->del('customers');
 
         return new JsonResponse(['status' => 'Customers successfully created']);
     }
