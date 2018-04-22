@@ -31,7 +31,7 @@ class CacheService
             $this->redis->connect();
 
             $this->isOn = true;
-        } catch(\Predis\Connection\ConnectionException $e) {
+        } catch(ConnectionException $e) {
             $this->isOn = false;
         }
     }
