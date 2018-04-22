@@ -3,6 +3,7 @@
 namespace AppBundle\Service;
 
 use Predis\Client;
+use Predis\Connection\ConnectionException;
 
 /**
 * Here you have to implement a CacheService with the operations below.
@@ -12,27 +13,48 @@ use Predis\Client;
 class CacheService
 {
     protected $redis;
+    protected $isOn;
 
     public function __construct($host, $port, $prefix)
     {
-        $this->redis = new Client([
-            'host' => $host, 
-            'port' => $port
-        ]);
+        $this->startRedis($host, $port, $prefix);
+    }
+
+    private function startRedis($host, $port, $prefix)
+    {
+        try {
+            $this->redis = new Client([
+                'host' => $host, 
+                'port' => $port
+            ]);
+            
+            $this->redis->connect();
+
+            $this->isOn = true;
+        } catch(\Predis\Connection\ConnectionException $e) {
+            $this->isOn = false;
+        }
     }
 
     public function get($key)
     {
+        if (!$this->isOn)
+            return false;
+
         return $this->redis->get($key);
     }
 
     public function set($key, $value)
     {
-        $this->redis->set($key, $value);
+        if ($this->isOn) {
+            $this->redis->set($key, $value);
+        }
     }
 
     public function del($key)
     {
-        $this->redis->del($key);
+        if ($this->isOn) {
+            $this->redis->del($key);
+        }
     }
 }
