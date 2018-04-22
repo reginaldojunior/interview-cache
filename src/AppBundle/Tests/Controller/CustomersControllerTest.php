@@ -27,22 +27,31 @@ class CustomersControllerTest extends WebTestCase
         $this->client->request('POST', '/customers/', [], [], ['CONTENT_TYPE' => 'application/json'], $customers);
 
         $this->assertTrue($this->client->getResponse()->isSuccessful());
+
+        $response = json_decode($this->client->getResponse()->getContent(), 1);
+
+        $this->assertEquals(['status' => 'Customers successfully created'], $response);
     }
 
     public function testGetCustomers()
     {
         $this->client->request('GET', '/customers/');
 
-        $response = json_decode($this->client->getResponse()->getContent());
+        $response = json_decode($this->client->getResponse()->getContent(), 1);
 
         $this->assertNotEmpty($response);
+        $this->assertArrayHasKey('name', $response[0]);
+        $this->assertArrayHasKey('age', $response[0]);
     }
 
     public function testDeleteCustomers()
     {
         $this->client->request('DELETE', '/customers/');
 
+        $response = json_decode($this->client->getResponse()->getContent(), 1);
+
         $this->assertTrue($this->client->getResponse()->isSuccessful());
+        $this->assertEquals(['status' => 'Customers successfully deleted'], $response);
     }
 
     public function testGetEmptyCustomers()
