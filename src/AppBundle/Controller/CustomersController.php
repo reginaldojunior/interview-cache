@@ -17,13 +17,17 @@ class CustomersController extends Controller
     public function getAction()
     {
         $cacheService = $this->get('cache_service');
-
+        
+        $customers = json_decode($cacheService->get('customers'));
+        
         if (empty($customers)) {
             $database = $this->get('database_service');
             $customers = $database->executeQuery("customers");
             $customers = iterator_to_array($customers);
+            
+            $cacheService->set('customers', json_encode($customers));
         }
-
+        
         return new JsonResponse($customers);
     }
 
@@ -51,9 +55,13 @@ class CustomersController extends Controller
      */
     public function deleteAction()
     {
+        $cacheService = $this->get('cache_service');
+
         $database = $this->get('database_service');
 
         $database->drop('customers');
+
+        $cacheService->del('customers');
 
         return new JsonResponse(['status' => 'Customers successfully deleted']);
     }
